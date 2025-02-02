@@ -1,3 +1,4 @@
+import os
 import requests
 from environs import Env
 from img_download import get_extension, img_download
@@ -16,14 +17,14 @@ def createParser():
         help='кол-во фото'
     )
     parser.add_argument(
-        '--path_file',
+        '--dirname',
         help=f'путь, куда скачивать фото, по умолчанию {env.str('IMAGES')}',
         default=env.str('IMAGES')
     )
     return parser.parse_args()
 
 
-def get_nasa_apods(nasa_api, count, path_file):
+def get_nasa_apods(nasa_api, count, dirname):
     params = {
         'api_key': nasa_api,
         'count': count,
@@ -33,21 +34,18 @@ def get_nasa_apods(nasa_api, count, path_file):
     response.raise_for_status()
 
     datas = response.json()
-    links = []
+    urls = []
     for apod in datas:
-        links.append(apod['url'])
+        urls.append(apod['url'])
 
-    for link_number, link in enumerate(links):
-        ext = get_extension(link)
-        img_download(
-            link,
-            path_file,
-            f'nasa_apod_{link_number}{ext}'
-        )
+    for url_number, url in enumerate(urls):
+        ext = get_extension(url)
+        path_file = os.path.join(dirname, f'nasa_apod_{url_number}{ext}')
+        img_download(url, path_file)
 
 
 if __name__ == '__main__':
     env = Env()
     env.read_env()
     args = createParser()
-    get_nasa_apods(args.nasa_api, args.count, args.path_file)
+    get_nasa_apods(args.nasa_api, args.count, args.dirname)

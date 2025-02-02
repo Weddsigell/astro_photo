@@ -1,13 +1,25 @@
+import os
+from pathlib import Path
+from pprint import pprint
 from environs import Env
-import telegram
-
 
 def main():
-    tg_tоken = env.str('TG_TOKEN')
-    bot = telegram.Bot(tg_tоken)
-    bot.send_message(text='Добро пожаловать в канал с астро фото', chat_id=env.str('TG_ID_CHANEL'))
-    bot.send_document(chat_id=env.str('TG_ID_CHANEL'), document=open('./images/epic_0.png', 'rb'))
+    # Path('./images').mkdir(parents=True, exist_ok=True)
+    # with open(f'{path_file}/{img_name}', 'wb') as file:
+    #     file.write(response.content)
 
+
+    photos = []
+    ext = ('.png', '.jpg', '.txt')
+    for datas in os.walk('./images'):
+        for filename in datas[2]:
+            file = os.path.join(datas[0], filename)
+            if file.endswith(ext):
+                photos.append(file)
+            else:
+                continue
+    pprint(photos)
+    print(os.path.split(photos[0]))
 
 if __name__ == '__main__':
     env = Env()

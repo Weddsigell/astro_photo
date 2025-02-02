@@ -1,3 +1,4 @@
+import os
 import requests
 from environs import Env
 from img_download import img_download
@@ -12,7 +13,7 @@ def createParser():
         default=env.str('NASA_API')
     )
     parser.add_argument(
-        '--path_file',
+        '--dirname',
         help=f'путь, куда скачивать фото, по умолчанию {env.str('IMAGES')}',
         default=env.str('IMAGES')
     )
@@ -24,7 +25,7 @@ def createParser():
     return parser.parse_args()
 
 
-def get_nasa_epic(nasa_api, path_file, count):
+def get_nasa_epic(nasa_api, dirname, count):
     url = 'https://api.nasa.gov/EPIC/api/natural/images'
     params = {
         'api_key': nasa_api,
@@ -38,8 +39,8 @@ def get_nasa_epic(nasa_api, path_file, count):
         date = img['date'].split(' ')[0].split('-')
         img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/{}/{}/png/{}.png?api_key={}'
                    .format(date[0], date[1],date[2],img_name,nasa_api))
-        print(img_url)
-        img_download(img_url, path_file, f'epic_{img_number}.png')
+        path_file = os.path.join(dirname, f'epic_{img_number}.png')
+        img_download(img_url, path_file)
 
         if count <= (img_number + 1):
             break
@@ -49,4 +50,4 @@ if __name__ == '__main__':
     env = Env()
     env.read_env()
     args = createParser()
-    get_nasa_epic(args.nasa_api, args.path_file, args.count)
+    get_nasa_epic(args.nasa_api, args.dirname, args.count)

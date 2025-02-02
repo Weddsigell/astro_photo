@@ -11,11 +11,12 @@ def get_extension(img_url):
     return os.path.splitext(img_name)[1]
 
 
-def img_download(img_url, path_file, img_name):
+def img_download(img_url, path_file):
     response = requests.get(img_url)
     response.raise_for_status()
-    Path(path_file).mkdir(parents=True, exist_ok=True)
-    with open(f'{path_file}/{img_name}', 'wb') as file:
+    dirname = os.path.split(path_file)[0]
+    Path(dirname).mkdir(parents=True, exist_ok=True)
+    with open(path_file, 'wb') as file:
         file.write(response.content)
 
 

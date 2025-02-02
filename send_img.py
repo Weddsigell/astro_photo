@@ -1,13 +1,12 @@
 import argparse
 import os
 import random
-import time
 from environs import Env
 import telegram
 
 
 def createParser():
-    parser = argparse.ArgumentParser(description='Скачивает последние фото Земли')
+    parser = argparse.ArgumentParser(description='Публикует фото в телеграмм канал')
     parser.add_argument(
         '--tg_token',
         help=f'берется из env файла',
@@ -19,15 +18,9 @@ def createParser():
         default=env.str('TG_ID_CHANEL')
     )
     parser.add_argument(
-        '--dirname',
-        help=f'каталог с фото, берется из env файла',
-        default = env.str('IMAGES')
-    )
-    parser.add_argument(
-        'time',
-        help=f'промежуток времени в часах, для циклической публикации',
-        type=int,
-        default=4
+        '--path_file',
+        help=f'фото которое нужно опубликовать, по умолчанию случайное фото из директории',
+        default=env.str('IMAGES')
     )
     return parser.parse_args()
 
@@ -52,19 +45,10 @@ def photo_selection(dirname):
     return photos
 
 
-def sending_cycle(tg_token, tg_chat_id, dirname, delay):
-    while True:
-        photos = photo_selection(dirname)
-
-        for photo in photos:
-            send_photo(tg_token, tg_chat_id, photo)
-            time.sleep(delay)
-
-
-
-
 if __name__ == '__main__':
     env = Env()
     env.read_env()
     args = createParser()
-    sending_cycle(args.tg_token, args.tg_chat_id, args.dirname, args.time)
+    if args.path_file == env.str('IMAGES'):
+        args.path_file = photo_selection(args.path_file)[0]
+    send_photo(args.tg_token, args.tg_chat_id, args.path_file)

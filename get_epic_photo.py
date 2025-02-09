@@ -39,10 +39,10 @@ def get_nasa_epic(nasa_api, dirname, count):
     datas = response.json()
     for img_number, img in enumerate(datas):
         img_name = img['image']
-        date = datetime.fromisoformat(img['date'])
+        date = datetime.fromisoformat(img['date']).strftime('%Y/%m/%d')
         params = urlencode({'api_key': nasa_api})
-        img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/{}/{}/png/{}.png?{}'
-                   .format(date.year, date.month, date.day, img_name, params))
+        img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png?{}'
+                   .format(date, img_name, params))
         path_file = os.path.join(dirname, f'epic_{img_number}.png')
         download_img(img_url, path_file)
 

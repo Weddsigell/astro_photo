@@ -15,7 +15,8 @@ def create_parser():
     parser.add_argument(
         '--count',
         help='кол-во фото',
-        default=1
+        default=1,
+        type=int
     )
     parser.add_argument(
         '--dirname',
@@ -35,9 +36,7 @@ def get_nasa_apods(nasa_api, count, dirname):
     response.raise_for_status()
 
     datas = response.json()
-    urls = []
-    for apod in datas:
-        urls.append(apod['url'])
+    urls = [apod['url'] for apod in datas if apod['media_type'] == 'image']
 
     for url_number, url in enumerate(urls):
         ext = get_extension(url)

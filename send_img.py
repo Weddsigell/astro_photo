@@ -1,6 +1,7 @@
 import argparse
 import os
 import random
+from pathlib import Path
 from environs import Env
 import telegram
 
@@ -33,16 +34,8 @@ def send_photo(tg_token, tg_chat_id, path_file):
 
 
 def select_photo(dirname):
-    photos = []
     ext = ('.png', '.jpg')
-    for tuple in os.walk(dirname):
-        for filename in tuple[2]:
-            file = os.path.join(tuple[0], filename)
-            if file.endswith(ext):
-                photos.append(file)
-            else:
-                continue
-
+    photos = [os.path.join(tuple[0], filename) for tuple in Path(dirname).walk() for filename in tuple[2] if filename.endswith(ext)]
     random.shuffle(photos)
     return photos
 

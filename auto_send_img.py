@@ -1,5 +1,6 @@
 import argparse
 import time
+import telegram
 from environs import Env
 from send_img import select_photo, send_photo
 
@@ -29,13 +30,24 @@ def create_parser():
     )
     return parser.parse_args()
 
+def wait_response(tg_token, tg_chat_id, photo, bool):
+    while bool:
+        try:
+            send_photo(tg_token, tg_chat_id, photo)
+            bool = False
+        except telegram.error.TelegramError:
+            time.sleep(10)
 
 def sending_cycle(tg_token, tg_chat_id, dirname, delay):
     while True:
         photos = select_photo(dirname)
 
         for photo in photos:
-            send_photo(tg_token, tg_chat_id, photo)
+            try:
+                send_photo(tg_token, tg_chat_id, photo)
+            except telegram.error.TelegramError:
+                wait_response(tg_token, tg_chat_id, photo, True)
+
             time.sleep(delay * 60 * 60) #часы * минуты * секунды = секунды
 
 

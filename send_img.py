@@ -18,7 +18,7 @@ def create_parser():
         default=env.str('TG_ID_CHANEL')
     )
     parser.add_argument(
-        'path_file',
+        '--path_file',
         help=f'фото которое нужно опубликовать, по умолчанию случайное фото из директории ./images',
         default='./images'
     )
@@ -27,7 +27,9 @@ def create_parser():
 
 def send_photo(tg_token, tg_chat_id, path_file):
     bot = telegram.Bot(tg_token)
-    bot.send_document(chat_id=tg_chat_id, document=open(path_file, 'rb'))
+    with open(path_file, 'rb') as file:
+        bot.send_document(chat_id=tg_chat_id, document=file)
+
 
 
 def select_photo(dirname):

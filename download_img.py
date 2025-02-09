@@ -18,7 +18,3 @@ def download_img(img_url, path_file):
     Path(dirname).mkdir(parents=True, exist_ok=True)
     with open(path_file, 'wb') as file:
         file.write(response.content)
-
-
-if __name__ == '__main__':
-    pass

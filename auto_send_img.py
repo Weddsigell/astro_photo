@@ -1,10 +1,10 @@
 import argparse
 import time
 from environs import Env
-from send_img import photo_selection, send_photo
+from send_img import select_photo, send_photo
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser(description='Автоматически публикует все фото из директории в телеграмм канал')
     parser.add_argument(
         '--tg_token',
@@ -18,8 +18,8 @@ def createParser():
     )
     parser.add_argument(
         '--dirname',
-        help=f'каталог с фото, берется из env файла',
-        default=env.str('IMAGES')
+        help=f'путь, куда скачивать фото',
+        default='./images'
     )
     parser.add_argument(
         '--time',
@@ -32,7 +32,7 @@ def createParser():
 
 def sending_cycle(tg_token, tg_chat_id, dirname, delay):
     while True:
-        photos = photo_selection(dirname)
+        photos = select_photo(dirname)
 
         for photo in photos:
             send_photo(tg_token, tg_chat_id, photo)
@@ -42,5 +42,5 @@ def sending_cycle(tg_token, tg_chat_id, dirname, delay):
 if __name__ == '__main__':
     env = Env()
     env.read_env()
-    args = createParser()
+    args = create_parser()
     sending_cycle(args.tg_token, args.tg_chat_id, args.dirname, args.time)

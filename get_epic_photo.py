@@ -1,26 +1,29 @@
 import os
+from email.policy import default
+
 import requests
 from environs import Env
-from img_download import img_download
+from download_img import download_img
 import argparse
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser(description='Скачивает последние фото Земли')
     parser.add_argument(
         '--nasa_api',
-        help=f'api nasa, берется из env файла',
-        default=env.str('NASA_API')
+        help=f'ключ api от nasa',
+        default='DEMO_KEY'
     )
     parser.add_argument(
         '--dirname',
-        help=f'путь, куда скачивать фото, по умолчанию {env.str('IMAGES')}',
-        default=env.str('IMAGES')
+        help=f'путь, куда скачивать фото',
+        default='./images'
     )
     parser.add_argument(
-        'count',
+        '--count',
         help='кол-во фото',
-        type=int
+        type=int,
+        default=1
     )
     return parser.parse_args()
 
@@ -40,7 +43,7 @@ def get_nasa_epic(nasa_api, dirname, count):
         img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/{}/{}/png/{}.png?api_key={}'
                    .format(date[0], date[1],date[2],img_name,nasa_api))
         path_file = os.path.join(dirname, f'epic_{img_number}.png')
-        img_download(img_url, path_file)
+        download_img(img_url, path_file)
 
         if count <= (img_number + 1):
             break
@@ -49,5 +52,5 @@ def get_nasa_epic(nasa_api, dirname, count):
 if __name__ == '__main__':
     env = Env()
     env.read_env()
-    args = createParser()
+    args = create_parser()
     get_nasa_epic(args.nasa_api, args.dirname, args.count)

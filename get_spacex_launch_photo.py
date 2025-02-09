@@ -1,16 +1,16 @@
 import os
 import requests
 from environs import Env
-from img_download import img_download
+from download_img import download_img
 import argparse
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser(description='Скачивает фото запуска ракет spacex')
     parser.add_argument(
         '--dirname',
-        help=f'путь, куда скачивать фото, по умолчанию {env.str('IMAGES')}',
-        default=env.str('IMAGES')
+        help=f'путь, куда скачивать фото',
+        default='./images'
     )
     parser.add_argument(
         '--flight_id',
@@ -28,11 +28,11 @@ def fetch_spacex_last_launch(dirname, flight_id='latest'):
 
     for url_number, url in enumerate(urls):
         path_file = os.path.join(dirname, f'spacex_{url_number}.jpg')
-        img_download(url, path_file)
+        download_img(url, path_file)
 
 
 if __name__ =='__main__':
     env = Env()
     env.read_env()
-    args = createParser()
+    args = create_parser()
     fetch_spacex_last_launch(args.dirname, args.flight_id)

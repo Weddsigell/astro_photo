@@ -5,7 +5,7 @@ from environs import Env
 import telegram
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser(description='Публикует фото в телеграмм канал')
     parser.add_argument(
         '--tg_token',
@@ -18,9 +18,9 @@ def createParser():
         default=env.str('TG_ID_CHANEL')
     )
     parser.add_argument(
-        '--path_file',
-        help=f'фото которое нужно опубликовать, по умолчанию случайное фото из директории',
-        default=env.str('IMAGES')
+        'path_file',
+        help=f'фото которое нужно опубликовать, по умолчанию случайное фото из директории ./images',
+        default='./images'
     )
     return parser.parse_args()
 
@@ -30,7 +30,7 @@ def send_photo(tg_token, tg_chat_id, path_file):
     bot.send_document(chat_id=tg_chat_id, document=open(path_file, 'rb'))
 
 
-def photo_selection(dirname):
+def select_photo(dirname):
     photos = []
     ext = ('.png', '.jpg')
     for tuple in os.walk(dirname):
@@ -48,7 +48,7 @@ def photo_selection(dirname):
 if __name__ == '__main__':
     env = Env()
     env.read_env()
-    args = createParser()
-    if args.path_file == env.str('IMAGES'):
-        args.path_file = photo_selection(args.path_file)[0]
+    args = create_parser()
+    if args.path_file == './images':
+        args.path_file = select_photo(args.path_file)[0]
     send_photo(args.tg_token, args.tg_chat_id, args.path_file)

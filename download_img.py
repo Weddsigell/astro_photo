@@ -11,7 +11,7 @@ def get_extension(img_url):
     return os.path.splitext(img_name)[1]
 
 
-def img_download(img_url, path_file):
+def download_img(img_url, path_file):
     response = requests.get(img_url)
     response.raise_for_status()
     dirname = os.path.split(path_file)[0]

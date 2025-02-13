@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import requests
 from environs import Env
 from download_img import get_extension, download_img
@@ -21,7 +21,8 @@ def create_parser():
     parser.add_argument(
         '--dirname',
         help=f'путь, куда скачивать фото',
-        default='./images'
+        default=Path.cwd() / 'images',
+        type=Path
     )
     return parser.parse_args()
 
@@ -40,7 +41,7 @@ def get_nasa_apods(nasa_api, count, dirname):
 
     for url_number, url in enumerate(urls):
         ext = get_extension(url)
-        path_file = os.path.join(dirname, f'nasa_apod_{url_number}{ext}')
+        path_file = Path(dirname) / f'nasa_apod_{url_number}{ext}'
         download_img(url, path_file)
 
 

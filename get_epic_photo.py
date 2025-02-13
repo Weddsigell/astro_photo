@@ -1,5 +1,5 @@
-import os
 from datetime import datetime
+from pathlib import Path
 import requests
 from environs import Env
 from download_img import download_img
@@ -17,7 +17,8 @@ def create_parser():
     parser.add_argument(
         '--dirname',
         help=f'путь, куда скачивать фото',
-        default='./images'
+        default=Path.cwd() / 'images',
+        type=Path
     )
     parser.add_argument(
         '--count',
@@ -43,7 +44,7 @@ def get_nasa_epic(nasa_api, dirname, count):
         params = urlencode({'api_key': nasa_api})
         img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png?{}'
                    .format(date, img_name, params))
-        path_file = os.path.join(dirname, f'epic_{img_number}.png')
+        path_file = Path(dirname) / f'epic_{img_number}.png'
         download_img(img_url, path_file)
 
         if count <= (img_number + 1):

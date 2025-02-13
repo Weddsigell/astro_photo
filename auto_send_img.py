@@ -1,5 +1,6 @@
 import argparse
 import time
+from pathlib import Path
 import telegram
 from environs import Env
 from send_img import select_photo, send_photo
@@ -20,7 +21,8 @@ def create_parser():
     parser.add_argument(
         '--dirname',
         help=f'путь, куда скачивать фото',
-        default='./images'
+        default=Path.cwd() / 'images',
+        type=Path
     )
     parser.add_argument(
         '--time',

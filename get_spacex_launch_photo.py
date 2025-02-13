@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import requests
 from environs import Env
 from download_img import download_img
@@ -10,7 +10,8 @@ def create_parser():
     parser.add_argument(
         '--dirname',
         help=f'путь, куда скачивать фото',
-        default='./images'
+        default=Path.cwd() / 'images',
+        type=Path
     )
     parser.add_argument(
         '--flight_id',
@@ -27,7 +28,7 @@ def fetch_spacex_last_launch(dirname, flight_id='latest'):
     urls = response.json()['links']['flickr']['original']
 
     for url_number, url in enumerate(urls):
-        path_file = os.path.join(dirname, f'spacex_{url_number}.jpg')
+        path_file = Path(dirname) / f'spacex_{url_number}.jpg'
         download_img(url, path_file)
 
 

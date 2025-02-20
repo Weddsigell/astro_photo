@@ -4,7 +4,6 @@ import requests
 from environs import Env
 from download_img import download_img
 import argparse
-from urllib.parse import urlencode
 
 
 def create_parser():
@@ -41,11 +40,11 @@ def get_nasa_epic(nasa_api, dirname, count):
     for img_number, img in enumerate(datas):
         img_name = img['image']
         date = datetime.fromisoformat(img['date']).strftime('%Y/%m/%d')
-        params = urlencode({'api_key': nasa_api})
-        img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png?{}'
-                   .format(date, img_name, params))
+        payload = {'api_key': nasa_api}
+        img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png'
+                   .format(date, img_name))
         path_file = Path(dirname) / f'epic_{img_number}.png'
-        download_img(img_url, path_file)
+        download_img(img_url, path_file, payload)
 
         if count <= (img_number + 1):
             break

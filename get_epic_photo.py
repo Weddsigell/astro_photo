@@ -30,17 +30,14 @@ def create_parser():
 
 def get_nasa_epic(nasa_api, dirname, count):
     url = 'https://api.nasa.gov/EPIC/api/natural/images'
-    params = {
-        'api_key': nasa_api,
-    }
-    response = requests.get(url, params=params)
+    payload = {'api_key': nasa_api}
+    response = requests.get(url, params=payload)
     response.raise_for_status()
 
     datas = response.json()
     for img_number, img in enumerate(datas):
         img_name = img['image']
         date = datetime.fromisoformat(img['date']).strftime('%Y/%m/%d')
-        payload = {'api_key': nasa_api}
         img_url = ('https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png'
                    .format(date, img_name))
         path_file = Path(dirname) / f'epic_{img_number}.png'

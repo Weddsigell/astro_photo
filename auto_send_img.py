@@ -32,11 +32,11 @@ def create_parser():
     )
     return parser.parse_args()
 
-def wait_response(tg_token, tg_chat_id, photo, bool):
-    while bool:
+def wait_response(tg_token, tg_chat_id, photo, connect):
+    while not connect:
         try:
             send_photo(tg_token, tg_chat_id, photo)
-            bool = False
+            connect = True
         except telegram.error.TelegramError:
             time.sleep(10)
 
@@ -48,7 +48,7 @@ def sending_cycle(tg_token, tg_chat_id, dirname, delay):
             try:
                 send_photo(tg_token, tg_chat_id, photo)
             except telegram.error.TelegramError:
-                wait_response(tg_token, tg_chat_id, photo, True)
+                wait_response(tg_token, tg_chat_id, photo, False)
 
             time.sleep(delay * 60 * 60) #часы * минуты * секунды = секунды
 
